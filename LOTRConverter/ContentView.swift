@@ -31,7 +31,7 @@ struct ContentView: View {
                 Text("Currency Exchange")
                     .font(.largeTitle)
                     .foregroundStyle(.white)
-                    
+                
                 
                 // conversion section
                 
@@ -90,8 +90,6 @@ struct ContentView: View {
                             .textFieldStyle(.roundedBorder)
                             .multilineTextAlignment(.trailing)
                     }
-                    
-                    
                 }
                 .padding()
                 .background(.black.opacity(0.5))
@@ -112,7 +110,6 @@ struct ContentView: View {
                     .padding(.trailing)
                 }
             }
-            
         }
     }
 }
