@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ExchnageInfo: View {
+    
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         ZStack {
             // Background
@@ -47,7 +50,7 @@ struct ExchnageInfo: View {
                 
                 //Button
                 Button("Done") {
-                    
+                    dismiss()
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.brown.mix(with: .black, by: 0.2))
