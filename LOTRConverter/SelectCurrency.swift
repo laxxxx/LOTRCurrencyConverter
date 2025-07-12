@@ -23,15 +23,23 @@ struct SelectCurrency: View {
                 Text("Select the currency you are starting with :")
                     .fontWeight(.bold)
                 
-                
-                CurrencyIcon(currencyIcon: .copperpenny, currencyName: "Copper Penny")
+                //currency Icons
+                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
+                    ForEach(Currency.allCases) { currency in
+                        CurrencyIcon(currencyIcon: currency.currencyImage, currencyName: currency.name)
+                    }
+                }
                 
                 //Text
                 Text("Select the currency you would like to convert to :")
                     .fontWeight(.bold)
                 
                 //Images
-                
+                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
+                    ForEach(Currency.allCases) { currency in
+                        CurrencyIcon(currencyIcon: currency.currencyImage, currencyName: currency.name)
+                    }
+                }
                 //done button
                 Button("Done") {
                     dismiss()
