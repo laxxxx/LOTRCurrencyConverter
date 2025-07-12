@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct SelectCurrency: View {
+    
+    @Environment(\.dismiss) var dismiss
+    
+    @Binding var topCurrency: Currency
+    @Binding var bottomCurrency: Currency
+    
     var body: some View {
-        
-        @Environment(\.dismiss) var dismiss
-        
         ZStack {
             //Parchment Background
             Image(.parchment)
@@ -24,22 +27,15 @@ struct SelectCurrency: View {
                     .fontWeight(.bold)
                 
                 //currency Icons
-                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
-                    ForEach(Currency.allCases) { currency in
-                        CurrencyIcon(currencyIcon: currency.currencyImage, currencyName: currency.name)
-                    }
-                }
+                IconGrid(selectedCurrency: $topCurrency)
                 
                 //Text
                 Text("Select the currency you would like to convert to :")
                     .fontWeight(.bold)
+                    .padding(.top)
                 
                 //Images
-                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
-                    ForEach(Currency.allCases) { currency in
-                        CurrencyIcon(currencyIcon: currency.currencyImage, currencyName: currency.name)
-                    }
-                }
+                IconGrid(selectedCurrency: $bottomCurrency)
                 //done button
                 Button("Done") {
                     dismiss()
@@ -52,11 +48,14 @@ struct SelectCurrency: View {
             }
             .padding()
             .multilineTextAlignment(.center)
+            .foregroundStyle(.black)
         }
         .background(Color.brown)
     }
 }
 
 #Preview {
-    SelectCurrency()
+    @Previewable @State var topCurrency: Currency = .goldPenny
+    @Previewable @State var bottomCurrency: Currency = .silverPenny
+    SelectCurrency(topCurrency: $topCurrency, bottomCurrency: $bottomCurrency)
 }
