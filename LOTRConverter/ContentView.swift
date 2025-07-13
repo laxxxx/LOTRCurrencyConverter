@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct ContentView: View {
     
@@ -14,8 +15,13 @@ struct ContentView: View {
     @State var leftAmount = ""
     @State var rightAmount = ""
     
+    @FocusState var isleftTyping
+    @FocusState var isrightTyping
+    
     @State var leftCurrency: Currency = .copperPenny
     @State var rightCurrency: Currency = .goldPiece
+    
+    var currencyTip = CurrencyTip()
     
     var body: some View {
         ZStack {
@@ -59,12 +65,14 @@ struct ContentView: View {
                         .padding(.bottom, -5)
                         .onTapGesture {
                             showSelectCurrency.toggle()
+                            currencyTip.invalidate(reason: .actionPerformed)
                         }
+                        .popoverTip(currencyTip, arrowEdge: .bottom)
                         
                         //Textfield
                         TextField("Enter amount", text: $leftAmount)
                             .textFieldStyle(.roundedBorder)
-                        
+                            .focused($isleftTyping)
                     }
                     
                     //equals
@@ -93,17 +101,19 @@ struct ContentView: View {
                         .padding(.bottom, -5)
                         .onTapGesture {
                             showSelectCurrency.toggle()
+                            currencyTip.invalidate(reason: .actionPerformed)
                         }
                         
                         //Textfield
                         TextField("Enter amount", text: $rightAmount)
                             .textFieldStyle(.roundedBorder)
                             .multilineTextAlignment(.trailing)
+                            .focused($isrightTyping)
                     }
                 }
                 .padding()
                 .background(.black.opacity(0.5))
-                .clipShape(.capsule)
+                .keyboardType(.decimalPad)
                 
                 Spacer()
                 
@@ -118,14 +128,33 @@ struct ContentView: View {
                             .foregroundStyle(.white)
                     }
                     .padding(.trailing)
-                    .sheet(isPresented: $showExchangeInfo) {
-                        ExchnageInfo()
-                    }
-                    .sheet(isPresented: $showSelectCurrency) {
-                        SelectCurrency(topCurrency: $leftCurrency, bottomCurrency: $rightCurrency)
-                    }
                 }
             }
+        }
+        .task {
+            try? Tips.configure()
+        }
+        .onChange(of: leftAmount) {
+            if isleftTyping {
+                rightAmount = leftCurrency.convert(leftAmount, to: rightCurrency)
+            }
+        }
+        .onChange(of: rightAmount) {
+            if isrightTyping {
+                leftAmount = rightCurrency.convert(rightAmount, to: leftCurrency)
+            }
+        }
+        .onChange(of: leftCurrency) {
+            leftAmount = rightCurrency.convert(rightAmount, to: leftCurrency)
+        }
+        .onChange(of: rightCurrency) {
+            rightAmount = leftCurrency.convert(leftAmount, to: rightCurrency)
+        }
+        .sheet(isPresented: $showExchangeInfo) {
+            ExchnageInfo()
+        }
+        .sheet(isPresented: $showSelectCurrency) {
+            SelectCurrency(topCurrency: $leftCurrency, bottomCurrency: $rightCurrency)
         }
     }
 }
